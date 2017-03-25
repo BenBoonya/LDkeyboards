@@ -5,11 +5,11 @@ package com.boonya.ben.ldproject.breakword;
  */
 public class Trie {
 
-    protected Trie parent=null;
-    protected Trie[] child=new Trie[1];
-    protected int numChildren=0;
+    protected Trie parent = null;
+    protected Trie[] child = new Trie[1];
+    protected int numChildren = 0;
     protected char ch;
-    protected boolean isWord=false;
+    protected boolean isWord = false;
 
     //Creates a Trie using the root symbol as the character
     public Trie() {
@@ -18,7 +18,7 @@ public class Trie {
 
     //Creates a Trie using the specified character
     public Trie(char c) {
-        ch=c;
+        ch = c;
     }
 
     //Used to create the trie nodes when a string is added to a trie
@@ -34,35 +34,35 @@ public class Trie {
     //Inserts the trie at the specified index.
     //  If successful, the parent of the specified trie is updated to be this trie.
     public void insertChild(Trie t, int index) {
-        if(index<0 || index>numChildren)
+        if (index < 0 || index > numChildren)
             throw new IllegalArgumentException("required: index >= 0 && index <= numChildren");
-        if(t==null)
+        if (t == null)
             throw new IllegalArgumentException("cannot add null child");
-        if(t.parent!=null)
+        if (t.parent != null)
             throw new IllegalArgumentException("specified child still belongs to parent");
-        if(hasChar(t.ch))
+        if (hasChar(t.ch))
             throw new IllegalArgumentException("duplicate chars not allowed");
-        if(isDescendent(t))
+        if (isDescendent(t))
             throw new IllegalArgumentException("cannot add cyclic reference");
-        t.parent=this;
-        if(numChildren==child.length) {
-            Trie[] arr=new Trie[2*(numChildren+1)];
-            for(int i=0; i<numChildren; i++)
-                arr[i]=child[i];
-            child=arr;
+        t.parent = this;
+        if (numChildren == child.length) {
+            Trie[] arr = new Trie[2 * (numChildren + 1)];
+            for (int i = 0; i < numChildren; i++)
+                arr[i] = child[i];
+            child = arr;
         }
-        for(int i=numChildren; i>index; i--)
-            child[i]=child[i-1];
-        child[index]=t;
+        for (int i = numChildren; i > index; i--)
+            child[i] = child[i - 1];
+        child[index] = t;
         numChildren++;
     }
 
     //Returns true if this node is a descendent of the specified node or this node and the specified
     //  node are the same node, false otherwise.
     public boolean isDescendent(Trie t) {
-        Trie r=this;
-        while(r!=null) {
-            if(r==t)
+        Trie r = this;
+        while (r != null) {
+            if (r == t)
                 return true;
             r = r.parent;
         }
@@ -77,26 +77,26 @@ public class Trie {
     }
 
     private boolean add(String s, int index) {
-        if(index==s.length()) {
-            if(isWord)
+        if (index == s.length()) {
+            if (isWord)
                 return false;
-            isWord=true;
+            isWord = true;
             return true;
         }
-        char c=s.charAt(index);
-        for (int i=0; i<numChildren; i++)
+        char c = s.charAt(index);
+        for (int i = 0; i < numChildren; i++)
             if (child[i].ch == c)
                 return child[i].add(s, index + 1);
 
         // this code adds from the bottom to the top because the addChild method
         // checks for cyclic references.  This prevents quadratic runtime.
-        int i=s.length() - 1;
-        Trie t=createNode(s.charAt(i--));
-        t.isWord=true;
-        while(i>=index) {
-            Trie n=createNode(s.charAt(i--));
+        int i = s.length() - 1;
+        Trie t = createNode(s.charAt(i--));
+        t.isWord = true;
+        while (i >= index) {
+            Trie n = createNode(s.charAt(i--));
             n.addChild(t);
-            t=n;
+            t = n;
         }
         addChild(t);
         return true;
@@ -104,8 +104,8 @@ public class Trie {
 
     //Returns the child that has the specified character or null if no child has the specified character.
     public Trie getNode(char c) {
-        for(int i=0; i<numChildren; i++)
-            if(child[i].ch==c)
+        for (int i = 0; i < numChildren; i++)
+            if (child[i].ch == c)
                 return child[i];
         return null;
     }
@@ -117,11 +117,11 @@ public class Trie {
     }
 
     private Trie getNode(String prefix, int index) {
-        if(index==prefix.length())
+        if (index == prefix.length())
             return this;
-        char c=prefix.charAt(index);
-        for(int i = 0; i < numChildren; i++)
-            if(child[i].ch==c)
+        char c = prefix.charAt(index);
+        for (int i = 0; i < numChildren; i++)
+            if (child[i].ch == c)
                 return child[i].getNode(prefix, index + 1);
         return null;
     }
@@ -130,8 +130,8 @@ public class Trie {
     //  all of its descendents.  This operation requires traversing the tree rooted at this node.
     public int size() {
         int size = 0;
-        if(isWord) size++;
-        for(int i=0; i<numChildren; i++)
+        if (isWord) size++;
+        for (int i = 0; i < numChildren; i++)
             size += child[i].size();
         return size;
     }
@@ -147,18 +147,18 @@ public class Trie {
     }
 
     private int getWords(String[] arr, int x) {
-        if(isWord)
-            arr[x++]=toString();
-        for(int i=0; i<numChildren; i++)
-            x=child[i].getWords(arr, x);
+        if (isWord)
+            arr[x++] = toString();
+        for (int i = 0; i < numChildren; i++)
+            x = child[i].getWords(arr, x);
         return x;
     }
 
     //Returns true if the specified string has a prefix path starting at this node.
     //  Otherwise false is returned.
     public boolean hasPrefix(String s) {
-        Trie t=getNode(s);
-        if(t==null)
+        Trie t = getNode(s);
+        if (t == null)
             return false;
         return true;
     }
@@ -166,10 +166,10 @@ public class Trie {
     //Check if the specified string is in the trie
     //  Retrun value if contains, 0 if hasPrefix, else -1
     public int contains(String s) {
-        Trie t=getNode(s);
-        if (t==null)
+        Trie t = getNode(s);
+        if (t == null)
             return -1;
-        if(t.isWord)
+        if (t.isWord)
             return 1;
         else
             return 0;
@@ -177,7 +177,7 @@ public class Trie {
 
     //Returns true if this node has a child with the specified character.
     public boolean hasChar(char c) {
-        for(int i=0; i<numChildren; i++)
+        for (int i = 0; i < numChildren; i++)
             if (child[i].ch == c)
                 return true;
         return false;
@@ -185,11 +185,11 @@ public class Trie {
 
     //Returns the number of nodes from this node up to the root node.  The root node has height 0.
     public int getHeight() {
-        int h=-1;
-        Trie t=this;
-        while(t!=null) {
+        int h = -1;
+        Trie t = this;
+        while (t != null) {
             h++;
-            t=t.parent;
+            t = t.parent;
         }
         return h;
     }
@@ -198,12 +198,12 @@ public class Trie {
     //  not including the root character.  The last character in the returned string is the
     //  character at this node.
     public String toString() {
-        StringBuffer sb=new StringBuffer(getHeight());
-        Trie t=this;
+        StringBuffer sb = new StringBuffer(getHeight());
+        Trie t = this;
 
-        while(t.parent!=null) {
+        while (t.parent != null) {
             sb.append(t.ch);
-            t=t.parent;
+            t = t.parent;
         }
         return sb.reverse().toString();
     }
