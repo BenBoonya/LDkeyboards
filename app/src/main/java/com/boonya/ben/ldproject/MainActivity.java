@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
     private InputMethodManager imeManager;
     private LinearLayout textContainer;
     public static boolean initFlag = true;
-    private View currentListItem,previousListItem;
+    private View currentListItem, previousListItem;
     private static int currentPos;
 
 
@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textContainer = (LinearLayout)findViewById(R.id.textContainer);
-        wordList = (ListView)findViewById(R.id.listView);
-        no_search = (TextView)findViewById(R.id.nonsearch_text);
+        textContainer = (LinearLayout) findViewById(R.id.textContainer);
+        wordList = (ListView) findViewById(R.id.listView);
+        no_search = (TextView) findViewById(R.id.nonsearch_text);
 
-        searchText = (EditText)findViewById(R.id.edit_search);
+        searchText = (EditText) findViewById(R.id.edit_search);
         searchText.setVisibility(View.GONE);
         imeManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
                     showList(spellModels);
                 }
 
-               initFlag = true;
+                initFlag = true;
             }
 
             @Override
@@ -141,22 +141,20 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 setCurrentPos(position);
-                if(currentListItem!=null && previousListItem != null ){
+                if (currentListItem != null && previousListItem != null) {
                     currentListItem = view;
                     ImageView previousImg = (ImageView) previousListItem.findViewById(R.id.listen);
                     previousImg.setImageResource(R.drawable.book_close_icon);
 
-                    ImageView currentImg = (ImageView)currentListItem.findViewById(R.id.listen);
+                    ImageView currentImg = (ImageView) currentListItem.findViewById(R.id.listen);
                     currentImg.setImageResource(R.drawable.book_icon);
                     previousListItem = currentListItem;
 
-                }
-
-                else {
+                } else {
                     currentListItem = view;
                     ImageView nextImg = (ImageView) currentListItem.findViewById(R.id.listen);
                     nextImg.setImageResource(R.drawable.book_icon);
-                    previousListItem =currentListItem;
+                    previousListItem = currentListItem;
 
                 }
 
@@ -186,23 +184,23 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             }
         });
 
-    wordList.setOnScrollListener(new AbsListView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-            initFlag = false;
-        }
+        wordList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                initFlag = false;
+            }
 
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        }
-    });
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(tts == null) {
+        if (tts == null) {
             checkTTSEngineInstalled(VAJA_TTS_ENGINE, null);
         }
     }
@@ -216,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       itemBlog = menu.add(Menu.NONE, // Group ID
+        itemBlog = menu.add(Menu.NONE, // Group ID
                 R.id.action_search, // Item ID
                 101, // Order
                 "Search"); // Title
@@ -232,11 +230,10 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
         int id = item.getItemId();
         if (id == R.id.action_about_us) {
 
-            Intent itn = new Intent(MainActivity.this,AboutUsActivity.class);
+            Intent itn = new Intent(MainActivity.this, AboutUsActivity.class);
             startActivity(itn);
             return true;
-        }
-        else if(id == R.id.action_search){
+        } else if (id == R.id.action_search) {
             searchText.setVisibility(View.VISIBLE);
             itemBlog.setVisible(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -246,9 +243,7 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             wordList.setVisibility(View.VISIBLE);
 
             return true;
-        }
-
-        else if (id == android.R.id.home){
+        } else if (id == android.R.id.home) {
 
             itemBlog.setVisible(true);
             searchText.setVisibility(View.GONE);
@@ -261,13 +256,9 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             mgr.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
 
             return true;
-        }
-
-        else if(id == R.id.set_up_keyboard){
+        } else if (id == R.id.set_up_keyboard) {
             imeManager.showInputMethodPicker();
-        }
-
-        else if(id == R.id.turn_on_keyboard){
+        } else if (id == R.id.turn_on_keyboard) {
             Intent turn_on = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
             startActivityForResult(turn_on, 99);
 
@@ -314,35 +305,35 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
 
     private void importDatabase() {
 
-                int value = 0;
-                if (MySQLiteHelper.isEnglish) {
-                    value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_SENSE_GROUP);
+        int value = 0;
+        if (MySQLiteHelper.isEnglish) {
+            value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_SENSE_GROUP);
 
-                    if (value < MySQLiteHelper.LEXITRON_EN_SENSE_GROUP_COUNT) {
-                            new LoadData().execute(R.raw.sense_group_en);
-                    }
-                    value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_SENSE);
-                    if (value < MySQLiteHelper.LEXITRON_EN_SENSE_COUNT) {
-                            new LoadData().execute(R.raw.sense_en);
-                    }
-                    value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_BEST_SPELL);
-                    if (value < MySQLiteHelper.LEXITRON_EN_SENSE_BEST_SPELL_COUNT) {
-                        new LoadData().execute(R.raw.best_spell_en);
-                    }
-                } else {
-
-                    value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_TH_SENSE);
-                    Log.i(TAG, value + " thai sense");
-                    if (value < MySQLiteHelper.LEXITRON_TH_SENSE_COUNT) {
-                        new LoadData().execute(R.raw.sense_th);
-                    }
-                    value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_TH_BEST_SPELL);
-                    Log.i(TAG, value + " thai best spell");
-                    if (value < MySQLiteHelper.LEXITRON_TH_SENSE_BEST_SPELL_COUNT) {
-                        new LoadData().execute(R.raw.best_spell_th);
-                    }
-                }
+            if (value < MySQLiteHelper.LEXITRON_EN_SENSE_GROUP_COUNT) {
+                new LoadData().execute(R.raw.sense_group_en);
             }
+            value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_SENSE);
+            if (value < MySQLiteHelper.LEXITRON_EN_SENSE_COUNT) {
+                new LoadData().execute(R.raw.sense_en);
+            }
+            value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_EN_BEST_SPELL);
+            if (value < MySQLiteHelper.LEXITRON_EN_SENSE_BEST_SPELL_COUNT) {
+                new LoadData().execute(R.raw.best_spell_en);
+            }
+        } else {
+
+            value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_TH_SENSE);
+            Log.i(TAG, value + " thai sense");
+            if (value < MySQLiteHelper.LEXITRON_TH_SENSE_COUNT) {
+                new LoadData().execute(R.raw.sense_th);
+            }
+            value = ApplicationClass.database.getTableCount(MySQLiteHelper.LEXITRON_TH_BEST_SPELL);
+            Log.i(TAG, value + " thai best spell");
+            if (value < MySQLiteHelper.LEXITRON_TH_SENSE_BEST_SPELL_COUNT) {
+                new LoadData().execute(R.raw.best_spell_th);
+            }
+        }
+    }
 
     public int insertFromFile(Context context, int resourceId) throws IOException {
         // Reseting Counter
@@ -385,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
     public WordBreak wordbreaker(String input) {
 
         WordBreak returnWord = null;
-        int length=0;
+        int length = 0;
         int inputLength = input.trim().length();
 
         String whereIn = "";
@@ -412,30 +403,27 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             String[] listValues = list.split("-");
             length = listValues.length;
 
-            Log.i("Lenght of word: "," "+length);
+            Log.i("Lenght of word: ", " " + length);
 
-            whereIn = whereIn+"(";
+            whereIn = whereIn + "(";
 
-            for (int i=0;i<length;i++){
-                if (i == length-1){
-                    whereIn += "'"+listValues[i]+"'";
-                }
-                else{
-                    whereIn += "'"+listValues[i]+"',";
+            for (int i = 0; i < length; i++) {
+                if (i == length - 1) {
+                    whereIn += "'" + listValues[i] + "'";
+                } else {
+                    whereIn += "'" + listValues[i] + "',";
                 }
             }
 
             whereIn += ")";
-            Log.i("SLQ WHERE IN",whereIn);
+            Log.i("SLQ WHERE IN", whereIn);
 
             if (listValues != null && length > 0) {
-                if (listValues.length == 1 ) {
+                if (listValues.length == 1) {
                     returnValue = list.replace("-", "");
-                }
-                else if(listValues.length==2){
+                } else if (listValues.length == 2) {
                     returnValue = listValues[1];
-                }
-                else if (listValues.length > 2) {
+                } else if (listValues.length > 2) {
                     returnValue = listValues[1];
                 }
             } else {
@@ -443,11 +431,11 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
             }
         }
         Log.i("breaking_result", returnValue);
-        returnWord = new WordBreak(returnValue,length,whereIn,inputLength,input);
+        returnWord = new WordBreak(returnValue, length, whereIn, inputLength, input);
         return returnWord;
     }
 
-    public String printEachForward(String source) throws IOException{
+    public String printEachForward(String source) throws IOException {
 
         int begin, end;
         String result = "";
@@ -456,13 +444,13 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
 
         while (LexTo.hasNext()) {
             end = LexTo.next();
-            System.out.println("Begin: "+begin);
-            System.out.println("End: "+end);
+            System.out.println("Begin: " + begin);
+            System.out.println("End: " + end);
             result += source.substring(begin, end) + "-";
 
             begin = end;
         }
-        Log.i("result of string",result);
+        Log.i("result of string", result);
         return result;
     }
 
@@ -482,9 +470,9 @@ public class MainActivity extends AppCompatActivity implements SpeakClick {
         super.onActivityResult(requestCode, resultCode, data);
 
         Log.i("requestCode resultCode ", requestCode + " " + resultCode);
-        if(requestCode == 99){
-            Intent turn_on = new Intent(this,MainActivity.class);
-            turn_on.putExtra("position",1);
+        if (requestCode == 99) {
+            Intent turn_on = new Intent(this, MainActivity.class);
+            turn_on.putExtra("position", 1);
             startActivity(turn_on);
             finish();
         }

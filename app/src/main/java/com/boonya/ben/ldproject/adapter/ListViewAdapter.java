@@ -18,7 +18,7 @@ import com.boonya.ben.ldproject.model.Best_Spell_Model;
 import java.util.ArrayList;
 
 public class ListViewAdapter extends BaseAdapter {
-    private static final String TAG = ListViewAdapter.class.getSimpleName() ;
+    private static final String TAG = ListViewAdapter.class.getSimpleName();
     private Context context;
     private ArrayList<Best_Spell_Model> contactModels;
     private boolean[] checkedStates;
@@ -79,9 +79,9 @@ public class ListViewAdapter extends BaseAdapter {
         }
         final Best_Spell_Model model = contactModels.get(position);
 
-       Log.i("ViewPosition", ""+viewPosition);
+        Log.i("ViewPosition", "" + viewPosition);
 
-        if(position != viewPosition){
+        if (position != viewPosition) {
             holder.thumbImage.setImageResource(R.drawable.book_close_icon);
         }
 
@@ -92,24 +92,21 @@ public class ListViewAdapter extends BaseAdapter {
 
         holder.txtTitle.setText(model.getmSenseGroup());
 //        holder.txtSize.setText(model.getmG2P());
-        if ((model.getmDescription() != null) && (model.getmDescription().trim().length() >1) ) {
+        if ((model.getmDescription() != null) && (model.getmDescription().trim().length() > 1)) {
             //Log.i(TAG, model.getmSenseGroup()+"  :: is null or length is zero" + model.getmDescription() );
             holder.thumbImage.setVisibility(View.VISIBLE);
         }
 
-        if ((model.getmDescription() == null || model.getmDescription().trim().length() == 0) ) {
-            Log.i(TAG, model.getmSenseGroup()+"  :: is null or length is zero" + model.getmDescription() );
+        if ((model.getmDescription() == null || model.getmDescription().trim().length() == 0)) {
+            Log.i(TAG, model.getmSenseGroup() + "  :: is null or length is zero" + model.getmDescription());
             holder.thumbImage.setVisibility(View.INVISIBLE);
-       }
-        else if ((model.getmDescription() != null) && (model.getmDescription().trim().length() == 1) ) {
-            Log.i(TAG, "model.getmDescription() is ::  "+model.getmDescription());
+        } else if ((model.getmDescription() != null) && (model.getmDescription().trim().length() == 1)) {
+            Log.i(TAG, "model.getmDescription() is ::  " + model.getmDescription());
             if (model.getmDescription().equalsIgnoreCase("-")) {
                 holder.thumbImage.setVisibility(View.INVISIBLE);
             }
         }
         holder.txtTitle.setTag(model.getmSenseGroup());
-
-
 
 
         holder.txtTitle.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +120,7 @@ public class ListViewAdapter extends BaseAdapter {
                     if (MainActivity.tts != null) {
                         Log.i("tts status :: ", "tts is not null *** ***");
                         MainActivity.tts.speak(model.getmSenseGroup(), TextToSpeech.QUEUE_FLUSH, null);
-                       // Toast.makeText(context, model.getmSenseGroup(), Toast.LENGTH_LONG).show();
+                        // Toast.makeText(context, model.getmSenseGroup(), Toast.LENGTH_LONG).show();
                     } else {
                         Log.i("tts status :: ", "tts is null *** ***");
                         speak.speak(model.getmDescription());
@@ -156,14 +153,14 @@ public class ListViewAdapter extends BaseAdapter {
 //                        Toast.makeText(context, model.getmDescription(), Toast.LENGTH_LONG).show();
 //                    } else {
                     Log.i("tts status :: ", "tts is null *** ***");
-                   // speak.speak(model.getmDescription());
-                    MainActivity.tts.speak(model.getmDescription(), TextToSpeech.QUEUE_FLUSH,null);
+                    // speak.speak(model.getmDescription());
+                    MainActivity.tts.speak(model.getmDescription(), TextToSpeech.QUEUE_FLUSH, null);
 //                    }
 
 //                    MainActivity.mTts.speak(model.getmDescription(), TextToSpeech.QUEUE_FLUSH, null);
                 } else {
 //                    ApplicationClass.tts.speak("No Description is available." + model.getmSenseGroup(), TextToSpeech.QUEUE_FLUSH, null);
-                    MainActivity.tts.speak("No description", TextToSpeech.QUEUE_FLUSH,null);
+                    MainActivity.tts.speak("No description", TextToSpeech.QUEUE_FLUSH, null);
                 }
             }
         });
