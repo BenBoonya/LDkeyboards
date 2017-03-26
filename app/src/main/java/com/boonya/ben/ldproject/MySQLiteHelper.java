@@ -117,10 +117,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                     count = c.getInt(0);
                 }
 
-        } catch (Exception e) {
         } finally {
-            c.close();
-            dataBaseEnd(database);
+            if (c != null) {
+                c.close();
+                dataBaseEnd(database);
+            }
         }
         if (databaseLogs) {
             Log.v("getTableCount  ::: ", tablename + " : " + count + "");
