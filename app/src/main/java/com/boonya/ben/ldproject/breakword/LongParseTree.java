@@ -21,33 +21,50 @@ public class LongParseTree {
     /*******************************************************************/
     public LongParseTree(Trie dict, Vector indexList, Vector typeList) throws IOException {
 
-        this.dict=dict;
-        this.indexList=indexList;
-        this.typeList=typeList;
+        this.dict = dict;
+        this.indexList = indexList;
+        this.typeList = typeList;
 
-        frontDepChar=new Vector();
-        rearDepChar=new Vector();
-        tonalChar=new Vector();
-        endingChar=new Vector();
+        frontDepChar = new Vector();
+        rearDepChar = new Vector();
+        tonalChar = new Vector();
+        endingChar = new Vector();
 
         //Adding front-dependent characters
-        frontDepChar.addElement("ะ"); frontDepChar.addElement("ั"); frontDepChar.addElement("า");
-        frontDepChar.addElement("ำ"); frontDepChar.addElement("ิ"); frontDepChar.addElement("ี");
-        frontDepChar.addElement("ึ"); frontDepChar.addElement("ื"); frontDepChar.addElement("ุ");
-        frontDepChar.addElement("ู"); frontDepChar.addElement("ๅ"); frontDepChar.addElement("็");
-        frontDepChar.addElement("์"); frontDepChar.addElement("ํ");
+        frontDepChar.addElement("ะ");
+        frontDepChar.addElement("ั");
+        frontDepChar.addElement("า");
+        frontDepChar.addElement("ำ");
+        frontDepChar.addElement("ิ");
+        frontDepChar.addElement("ี");
+        frontDepChar.addElement("ึ");
+        frontDepChar.addElement("ื");
+        frontDepChar.addElement("ุ");
+        frontDepChar.addElement("ู");
+        frontDepChar.addElement("ๅ");
+        frontDepChar.addElement("็");
+        frontDepChar.addElement("์");
+        frontDepChar.addElement("ํ");
 
         //Adding rear-dependent characters
-        rearDepChar.addElement("ั"); rearDepChar.addElement("ื"); rearDepChar.addElement("เ");
-        rearDepChar.addElement("แ"); rearDepChar.addElement("โ"); rearDepChar.addElement("ใ");
-        rearDepChar.addElement("ไ"); rearDepChar.addElement("ํ");
+        rearDepChar.addElement("ั");
+        rearDepChar.addElement("ื");
+        rearDepChar.addElement("เ");
+        rearDepChar.addElement("แ");
+        rearDepChar.addElement("โ");
+        rearDepChar.addElement("ใ");
+        rearDepChar.addElement("ไ");
+        rearDepChar.addElement("ํ");
 
         //Adding tonal characters
-        tonalChar.addElement("่"); tonalChar.addElement("้"); tonalChar.addElement("๊");
+        tonalChar.addElement("่");
+        tonalChar.addElement("้");
+        tonalChar.addElement("๊");
         tonalChar.addElement("๋");
 
         //Adding ending characters
-        endingChar.addElement("ๆ"); endingChar.addElement("ฯ");
+        endingChar.addElement("ๆ");
+        endingChar.addElement("ฯ");
     }
 
     /****************************************************************/
@@ -55,19 +72,19 @@ public class LongParseTree {
     /****************************************************************/
     private boolean nextWordValid(int beginPos, String text) {
 
-        int pos=beginPos+1;
+        int pos = beginPos + 1;
         int status;
 
-        if(beginPos==text.length())
+        if (beginPos == text.length())
             return true;
-        else if(text.charAt(beginPos)<='~')  //English alphabets/digits/special characters
+        else if (text.charAt(beginPos) <= '~')  //English alphabets/digits/special characters
             return true;
         else {
-            while(pos<=text.length()) {
-                status=dict.contains(text.substring(beginPos,pos));
-                if(status==1)
+            while (pos <= text.length()) {
+                status = dict.contains(text.substring(beginPos, pos));
+                if (status == 1)
                     return true;
-                else if(status==0)
+                else if (status == 0)
                     pos++;
                 else
                     break;
@@ -81,24 +98,24 @@ public class LongParseTree {
     /****************************************************************/
     public int parseWordInstance(int beginPos, String text) {
 
-        char prevChar='\0';      //Previous character
-        int longestPos=-1;       //Longest position
-        int longestValidPos=-1;  //Longest valid position
-        int numValidPos=0;       //Number of longest value pos (for determining ambiguity)
-        int returnPos=-1;        //Returned text position
+        char prevChar = '\0';      //Previous character
+        int longestPos = -1;       //Longest position
+        int longestValidPos = -1;  //Longest valid position
+        int numValidPos = 0;       //Number of longest value pos (for determining ambiguity)
+        int returnPos = -1;        //Returned text position
         int pos, status;
 
-        status=1;
-        numValidPos=0;
-        pos=beginPos+1;
-        while((pos<=text.length())&&(status!=-1)) {
-            status=dict.contains(text.substring(beginPos, pos));
+        status = 1;
+        numValidPos = 0;
+        pos = beginPos + 1;
+        while ((pos <= text.length()) && (status != -1)) {
+            status = dict.contains(text.substring(beginPos, pos));
 
             //Record longest so far
-            if(status==1) {
-                longestPos=pos;
-                if(nextWordValid(pos, text)) {
-                    longestValidPos=pos;
+            if (status == 1) {
+                longestPos = pos;
+                if (nextWordValid(pos, text)) {
+                    longestValidPos = pos;
                     numValidPos++;
                 }
             }
@@ -107,22 +124,21 @@ public class LongParseTree {
 
         //--------------------------------------------------
         //For checking rear dependent character
-        if(beginPos>=1)
-            prevChar=text.charAt(beginPos-1);
+        if (beginPos >= 1)
+            prevChar = text.charAt(beginPos - 1);
 
         //Unknown word
-        if(longestPos==-1) {
-            returnPos=beginPos+1;
+        if (longestPos == -1) {
+            returnPos = beginPos + 1;
             //Combine unknown segments
-            if((indexList.size()>0)&&
-                    (frontDepChar.contains("" + text.charAt(beginPos))||
-                            tonalChar.contains("" + text.charAt(beginPos))||
-                            rearDepChar.contains("" + prevChar)||
-                            (((Integer)typeList.elementAt(typeList.size()-1)).intValue()==0))) {
-                indexList.setElementAt(new Integer(returnPos), indexList.size()-1);
-                typeList.setElementAt(new Integer(0), typeList.size()-1);
-            }
-            else {
+            if ((indexList.size() > 0) &&
+                    (frontDepChar.contains("" + text.charAt(beginPos)) ||
+                            tonalChar.contains("" + text.charAt(beginPos)) ||
+                            rearDepChar.contains("" + prevChar) ||
+                            (((Integer) typeList.elementAt(typeList.size() - 1)).intValue() == 0))) {
+                indexList.setElementAt(new Integer(returnPos), indexList.size() - 1);
+                typeList.setElementAt(new Integer(0), typeList.size() - 1);
+            } else {
                 indexList.addElement(new Integer(returnPos));
                 typeList.addElement(new Integer(0));
             }
@@ -132,33 +148,29 @@ public class LongParseTree {
         //Known or ambiguous word
         else {
             //If there is no merging point
-            if(longestValidPos==-1) {
+            if (longestValidPos == -1) {
                 //Check whether front char requires rear segment
-                if(rearDepChar.contains("" + prevChar)) {
-                    indexList.setElementAt(new Integer(longestPos), indexList.size()-1);
-                    typeList.setElementAt(new Integer(0), typeList.size()-1);
-                }
-                else {
+                if (rearDepChar.contains("" + prevChar)) {
+                    indexList.setElementAt(new Integer(longestPos), indexList.size() - 1);
+                    typeList.setElementAt(new Integer(0), typeList.size() - 1);
+                } else {
                     typeList.addElement(new Integer(1));
                     indexList.addElement(new Integer(longestPos));
                 }
-                return(longestPos);  //known followed by unknown: consider longestPos
-            }
-            else {
+                return (longestPos);  //known followed by unknown: consider longestPos
+            } else {
                 //Check whether front char requires rear segment
-                if(rearDepChar.contains("" + prevChar)) {
-                    indexList.setElementAt(new Integer(longestValidPos), indexList.size()-1);
-                    typeList.setElementAt(new Integer(0), typeList.size()-1);
-                }
-                else if(numValidPos==1) {
+                if (rearDepChar.contains("" + prevChar)) {
+                    indexList.setElementAt(new Integer(longestValidPos), indexList.size() - 1);
+                    typeList.setElementAt(new Integer(0), typeList.size() - 1);
+                } else if (numValidPos == 1) {
                     typeList.addElement(new Integer(1)); //known
                     indexList.addElement(new Integer(longestValidPos));
-                }
-                else {
+                } else {
                     typeList.addElement(new Integer(2)); //ambiguous
                     indexList.addElement(new Integer(longestValidPos));
                 }
-                return(longestValidPos);
+                return (longestValidPos);
             }
         }
     } //parseWordInstance

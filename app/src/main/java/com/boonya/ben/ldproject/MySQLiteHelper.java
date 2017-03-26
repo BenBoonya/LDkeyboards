@@ -36,8 +36,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static int LEXITRON_TH_SENSE_GROUP_COUNT = 53560;
 
 
-
-
     public static boolean isEnglish = false;
     private static String mID = "ID";
     private static String mSENSEGROUP = "SENSEGROUP";
@@ -72,17 +70,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<String> getAllThaiWords(){
+    public ArrayList<String> getAllThaiWords() {
         ArrayList<String> thaiWords = new ArrayList<>();
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT "+ mSENSEGROUP +" FROM " + LEXITRON_TH_BEST_SPELL, null);
+        Cursor cursor = database.rawQuery("SELECT " + mSENSEGROUP + " FROM " + LEXITRON_TH_BEST_SPELL, null);
 
-        if(cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 thaiWords.add(cursor.getString(0));
 
             }
-            while(cursor.moveToNext());
+            while (cursor.moveToNext());
         }
         database.close();
 
@@ -144,7 +142,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         ArrayList<Best_Spell_Model> models = new ArrayList<Best_Spell_Model>();
         SQLiteDatabase database = this.getReadableDatabase();
-
 
 
         String selectQuery = "Select " + mG2P + " from " + LEXITRON_EN_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value + "'";
@@ -282,16 +279,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         String selectQuery = "";
 
 
-        Log.i("WordLength",wordLength+"");
+        Log.i("WordLength", wordLength + "");
 
-        if(wordLength<4){
-            String testQuery = "Select " + mG2P + " from " + LEXITRON_TH_BEST_SPELL + " where " + mSENSEGROUP + " IN " +"('"+inputWord+"')";
-            Cursor s = database.rawQuery(testQuery,null);
+        if (wordLength < 4) {
+            String testQuery = "Select " + mG2P + " from " + LEXITRON_TH_BEST_SPELL + " where " + mSENSEGROUP + " IN " + "('" + inputWord + "')";
+            Cursor s = database.rawQuery(testQuery, null);
 
-            if(s.getCount()!=0){
+            if (s.getCount() != 0) {
                 selectQuery = testQuery;
-            }
-            else {
+            } else {
                 String possibleBegin = MappingTH(inputWord.charAt(0));
                 for (int i = 0; i < possibleBegin.length(); i++) {
                     char begin = possibleBegin.charAt(i);
@@ -307,12 +303,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 s.close();
             }
 
-        }
-        else {
+        } else {
             selectQuery = "Select " + mG2P + " from " + LEXITRON_TH_BEST_SPELL + " where " + mSENSEGROUP + " IN " + value.getWhereIn();
         }
-       // String selectQuery = "Select " + mG2P + " from " + LEXITRON_TH_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value.getSearchingWord() + "'";
-       // String selectQuery = "Select substr(" + mG2P + ",|,1) from " + LEXITRON_EN_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value.getSearchingWord() + "'";
+        // String selectQuery = "Select " + mG2P + " from " + LEXITRON_TH_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value.getSearchingWord() + "'";
+        // String selectQuery = "Select substr(" + mG2P + ",|,1) from " + LEXITRON_EN_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value.getSearchingWord() + "'";
 //        String selectQuery = "Select * from " + LEXITRON_EN_BEST_SPELL + " where " + mSENSEGROUP + " = '" + value+"'";
 //        String selectQuery = "SELECT * FROM " + LEXITRON_EN_BEST_SPELL
 //                + " where " + mG2P + " like '%" + "(Select G2p from " + LEXITRON_EN_BEST_SPELL + " where " + mSENSEGROUP + " = " + value + ")%'";
@@ -335,20 +330,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
             if (c.getCount() > 0) {
-                if(c.moveToFirst()){
-                    do{
+                if (c.moveToFirst()) {
+                    do {
                         Log.i(TAG, " mG2P value " + c.getString(0));
                         g2pList.add(c.getString(0));
                     }
-                    while(c.moveToNext());
+                    while (c.moveToNext());
                 }
 
-                for(int i =0; i<g2pList.size(); i++){
+                for (int i = 0; i < g2pList.size(); i++) {
 
-                    if(i == g2pList.size()-1) {
+                    if (i == g2pList.size() - 1) {
                         g2pValue += mG2P + " like '%" + g2pList.get(i) + "%'";
-                    }
-                    else{
+                    } else {
                         g2pValue += mG2P + " like '%" + g2pList.get(i) + "%'" + " AND ";
 
                     }
@@ -382,7 +376,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 //                selectQuery = "SELECT * FROM " + LEXITRON_TH_BEST_SPELL
 //                        + " where " + mG2P + " like '%" + g2pValue + "%' LIMIT 50";
 
-                selectQuery = "SELECT * FROM " + LEXITRON_TH_BEST_SPELL + " where "+ g2pValue + " LIMIT "+mLimit;
+                selectQuery = "SELECT * FROM " + LEXITRON_TH_BEST_SPELL + " where " + g2pValue + " LIMIT " + mLimit;
 
                 Log.i(TAG, selectQuery);
                 c = database.rawQuery(selectQuery, null);
@@ -397,22 +391,22 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 String dsc = null;
                 for (int i = 0; i < models.size(); i++) {
 //                    if (models.size() <= mLimit) {
-                        selectQuery = "SELECT " + mSDEF + " FROM " + LEXITRON_TH_SENSE
-                                + " where " + mSSEARCH + " = '" + models.get(i).getmSenseGroup() + "'";
-                        Log.i(TAG, selectQuery);
-                        c = database.rawQuery(selectQuery, null);
+                    selectQuery = "SELECT " + mSDEF + " FROM " + LEXITRON_TH_SENSE
+                            + " where " + mSSEARCH + " = '" + models.get(i).getmSenseGroup() + "'";
+                    Log.i(TAG, selectQuery);
+                    c = database.rawQuery(selectQuery, null);
 
-                        if (c.getCount() > 0) {
-                            c.moveToFirst();
-                            Log.i(TAG, " mG2P value " + c.getString(0));
-                            dsc = c.getString(0);
-                        }
+                    if (c.getCount() > 0) {
+                        c.moveToFirst();
+                        Log.i(TAG, " mG2P value " + c.getString(0));
+                        dsc = c.getString(0);
+                    }
 //                    if (dsc == null) {
 //                        dsc = i + "";
 //                    }
-                        if (dsc != null && dsc.trim().length() != 0) {
-                            models.get(i).setmDescription(dsc);
-                        }
+                    if (dsc != null && dsc.trim().length() != 0) {
+                        models.get(i).setmDescription(dsc);
+                    }
 
 //                        if (models.size() > mLimit) {
 //                            break;
@@ -443,15 +437,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }
         Log.i(TAG, "models size :: " + models.size());
 
-        Collections.sort(models,Best_Spell_Model.comparator);
+        Collections.sort(models, Best_Spell_Model.comparator);
 
         return models;
     }
 
-    private String MappingTH(char key)
-    {
-        switch (key)
-        {
+    private String MappingTH(char key) {
+        switch (key) {
             case 'ก':
                 return "กภถฤดบมย";
             case 'ข':
