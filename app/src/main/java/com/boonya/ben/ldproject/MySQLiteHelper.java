@@ -3,6 +3,7 @@ package com.boonya.ben.ldproject;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -111,12 +112,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 return count;
             }
 
-            if (null != c)
-                if (c.getCount() > 0) {
-                    c.moveToFirst();
-                    count = c.getInt(0);
-                }
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                count = c.getInt(0);
+            }
 
+        } catch (SQLiteException ex) {
+            ex.printStackTrace();
         } finally {
             if (c != null) {
                 c.close();
